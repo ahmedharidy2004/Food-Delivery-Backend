@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/////////////// User Model \\\\\\\\\\\\\\\
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  phoneNumber String
+  role Role @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  restaurants Restaurant[]
+  addresses Address[]
+  reviews Review[]
+  orders Order[]
+  cart Cart?
+}
+
+///////////////// Category model \\\\\\\\\\\\\\\\\
+model Category {
+  id String @id @default(uuid())
+  name String
+  menuItems MenuItem[]
+}
+
+///////// Restaurant model \\\\\\\\\\\\\\\\\\\\
+model Restaurant {
+  id String @id @default(uuid())
+  name String
+  description String
+  phoneNumber String
+  openingHours Json
+  rating Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  menuItems MenuItem[]
+  reviews Review[]
+
+  ownerId String
+  owner User @relation(fields: [ownerId], references: [id])
+}
+
+//////////// Address model \\\\\\\\\\\\\\\\\\\
+model Address {
+  id String @id @default(uuid())
+  street String
+  city String
+  country String
+  zipCode String
+
+  orders Order[]
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
+
+///////////// Cart model \\\\\\\\\\\\\\\\\\\\
+model Cart {
+  id String @id @default(uuid())
+  
+  cartItems CartItem[]
+
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+}
+
+/////////// MenuItem model \\\\\\\\\\\\\\\\\\\\
+model MenuItem {
+  id String @id @default(uuid())
+  name String
+  description String
+  price Decimal
+  image String
+  isAvailable Boolean
+
+  orderItems OrderItem[]
+  cartItems CartItem[]
+
+  restaurantId String
+  restaurant Restaurant @relation(fields: [restaurantId], references:[id])
+  categoryId String
+  category Category @relation(fields: [categoryId], references:[id])
+}
+
+/////////////////// Review Model \\\\\\\\\\\\\\\\\\
+model Review {
+  id String @id @default(uuid())
+  rating Int
+  comment String
+  
+  userId String
+  user User @relation(fields: [userId], references:[id])
+  restaurantId String
+  restaurant Restaurant @relation(fields: [restaurantId], references:[id])
+}
+
+/////////////////// Order model \\\\\\\\\\\\\\\\\\
+model Order {
+  id String @id @default(uuid())
+  status OrderStatus
+  totalPrice Decimal
+  deliveryFee Decimal
+  paymentStatus PaymentStatus
+  createdAt DateTime @default(now())
+
+  orderItems OrderItem[]
+  payment Payment?
+
+  userId String
+  user User @relation(fields: [userId], references:[id])
+  addressId String
+  address Address @relation(fields: [addressId], references:[id])
+}
+
+//////////////// CartItems model \\\\\\\\\\\\\\\\\\\\\\\
+model CartItem {
+  id         String   @id @default(uuid())
+  quantity   Int
+
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id])
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@unique([cartId, menuItemId])
+}
+
+///////////// orderItems model \\\\\\\\\\\\\\\\\\\\
+model OrderItem {
+  id         String   @id @default(uuid())
+  quantity   Int
+  price      Decimal
+
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@unique([orderId, menuItemId])
+}
+
+//////////////// payment model \\\\\\\\\\\\\\\\\\\\
+model Payment {
+  id        String        @id @default(uuid())
+  method    PaymentMethod
+  status    PaymentStatus @default(PENDING)
+  amount    Decimal
+
+  orderId   String        @unique
+  order     Order         @relation(fields: [orderId], references: [id])
+}
+
+/////////////////// ENUMS \\\\\\\\\\\\\\\\\\\\\\\\\
+enum Role {
+  CUSTOMER
+  OWNER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  STRIPE
+}
