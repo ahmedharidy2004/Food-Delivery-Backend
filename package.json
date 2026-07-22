@@ -1,0 +1,25 @@
+{
+  "name": "food-delivery-backend",
+  "version": "1.0.0",
+  "description": "Food delivery backend project",
+  "homepage": "https://github.com/ahmedharidy2004/Food-Delivery-Backend#readme",
+  "bugs": {
+    "url": "https://github.com/ahmedharidy2004/Food-Delivery-Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedharidy2004/Food-Delivery-Backend.git"
+  },
+  "license": "MIT",
+  "author": "Ahmed Haridy",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon server.js",
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
