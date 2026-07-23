@@ -1,0 +1,65 @@
+import { PrismaClient } from "../../generated/prisma/client.js";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { hashPassword, comparePassword } from "./../utils/password.js";
+import { signToken } from "./../utils/jwt.js";
+import AppError from "./../utils/appError.js";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./.env" });
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
+export const signup = async (body) => {
+  const user = await prisma.user.create({
+    data: {
+      name: body.name,
+      email: body.email,
+      password: await hashPassword(body.password),
+      phoneNumber: body.phoneNumber,
+    },
+
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phoneNumber: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  return user;
+};
+
+export const login = async (body, next) => {
+  // check for email / passowrd existance
+  if (!body.email || !body.password) {
+    return next(
+      new AppError("you can not leave the email/password empty!", 400),
+    );
+  }
+
+  // check if email exists in the database.
+  const user = await prisma.user.findUnique({
+    where: {
+      email: body.email,
+    },
+  });
+  if (!user) {
+    return next(
+      new AppError(
+        "The email you entered is not found. please create a new account.",
+        400,
+      ),
+    );
+  }
+
+  // check if the password is correct.
+  if (!(await comparePassword(body.password, user.password))) {
+    return next(new AppError("Incorrect password provided", 400));
+  }
+
+  // if so return token
+  return user;
+};
