@@ -25,7 +25,7 @@ export const protect = catchAsync(async (req, res, next) => {
   }
 
   // check if the token is valid
-  const token = req.headers.Authorization.split(" ")[1];
+  const token = req.headers.authorization.split(" ")[1];
   const decoded = verifyToken(token);
   if (!decoded) {
     return next(new appError("Invalid Token.", 401));
