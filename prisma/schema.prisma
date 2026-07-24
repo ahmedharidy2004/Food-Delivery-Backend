@@ -24,6 +24,7 @@ model User {
   updatedAt DateTime @updatedAt
   resetPasswordToken String?
   resetPasswordExpiresIn DateTime?
+  isActive Boolean @default(true)
 
   restaurants Restaurant[]
   addresses Address[]
