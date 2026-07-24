@@ -9,16 +9,6 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 ////////////////////////////// Admin functions \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-//  id String @id @default(uuid())
-//   name String
-//   email String @unique
-//   password String
-//   phoneNumber String
-//   role Role @default(CUSTOMER)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   resetPasswordToken String?
-//   resetPasswordExpiresIn DateTime?
 
 export const getAllUsers = async () => {
   const users = await prisma.user.findMany({
