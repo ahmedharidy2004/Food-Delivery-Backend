@@ -1,12 +1,6 @@
-import { PrismaClient } from "../../generated/prisma/client.js";
-import { PrismaPg } from "@prisma/adapter-pg";
 import appError from "./../utils/appError.js";
-import dotenv from "dotenv";
+import prisma from "./../config/config.js";
 
-dotenv.config({ path: "./.env" });
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
 //////////////////////////////
 //  id String @id @default(uuid())
 //   name String
