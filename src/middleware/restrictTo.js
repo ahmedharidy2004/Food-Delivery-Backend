@@ -1,10 +1,10 @@
-import appError from "./../utils/appError";
+import appError from "./../utils/appError.js";
 
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        new appError("you are not authorized to perform this action!", 401),
+        new appError("your role does not let you perform this action!", 401),
       );
     }
 

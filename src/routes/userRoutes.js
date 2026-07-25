@@ -11,12 +11,12 @@ router.patch("/me", protect, userController.updateMe);
 router.delete("/me", protect, userController.deleteMe);
 
 //////////// Admin routes \\\\\\\\\\\\\\\\\
-router.get("/", protect, restrictTo("admin"), userController.getAllUsers);
+router.get("/", protect, restrictTo("ADMIN"), userController.getAllUsers);
 
 router
   .route("/:id")
-  .get(protect, restrictTo("admin"), userController.getUserById)
-  .patch(protect, restrictTo("admin"), userController.updateUser)
-  .delete(protect, restrictTo("admin"), userController.deleteUser);
+  .get(protect, restrictTo("ADMIN"), userController.getUserById)
+  .patch(protect, restrictTo("ADMIN"), userController.updateUser)
+  .delete(protect, restrictTo("ADMIN"), userController.deleteUser);
 
 export default router;
