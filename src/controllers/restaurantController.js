@@ -25,7 +25,10 @@ export const getRestaurantById = catchAsync(async (req, res) => {
 });
 
 export const createRestaurant = catchAsync(async (req, res) => {
-  const CreatedRestaurant = await restaurantService.createRestaurant(req.body);
+  const CreatedRestaurant = await restaurantService.createRestaurant(
+    req.body,
+    req.user,
+  );
 
   res.status(201).json({
     status: "success",
@@ -39,6 +42,7 @@ export const updateRestaurant = catchAsync(async (req, res) => {
   const updatedRestaurant = await restaurantService.updateRestaurant(
     req.params.id,
     req.body,
+    req.user,
   );
 
   res.status(200).json({

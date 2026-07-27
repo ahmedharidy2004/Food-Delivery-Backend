@@ -3,6 +3,7 @@ import AuthRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import restaurantRoutes from "./src/routes/restaurantRoutes.js";
 import menuRoutes from "./src/routes/menuRoutes.js";
+import cartRoutes from "./src/routes/cartRoutes.js";
 
 const app = express();
 
@@ -11,5 +12,6 @@ app.use("/auth", AuthRoutes);
 app.use("/users", userRoutes);
 app.use("/restaurants", restaurantRoutes);
 app.use("/menuItems", menuRoutes);
+app.use("/cart", cartRoutes);
 
 export default app;

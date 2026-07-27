@@ -99,9 +99,16 @@ export const createRestaurant = async (body) => {
   return createdRestaurant;
 };
 
-export const updateRestaurant = async (id, body) => {
+export const updateRestaurant = async (id, body, user) => {
   const { name, description, phoneNumber, openingHours, rating, ownerId } =
     body;
+
+  const restaurant = await prisma.restaurant.findUnique({ where: { id } });
+  if (!restaurant) throw new appError("Restaurant not found", 404);
+
+  if (user.role !== "ADMIN" && restaurant.ownerId !== user.id) {
+    throw new appError("You are not allowed to update this restaurant", 403);
+  }
 
   const updatedRestaurant = await prisma.restaurant.update({
     where: {
