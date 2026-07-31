@@ -34,6 +34,9 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(new appError("User is no longer found!", 401));
   }
 
+  if (!user.isActive)
+    return next(new appError("This user is no longer active", 401));
+
   req.user = user;
   next();
 });

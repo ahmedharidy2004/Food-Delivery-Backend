@@ -27,7 +27,7 @@ export const getMenuItemById = catchAsync(async (req, res) => {
 });
 
 export const createMenuItem = catchAsync(async (req, res) => {
-  const createdMenuItem = await menuService.createMenuItem(req.body);
+  const createdMenuItem = await menuService.createMenuItem(req.body, req.user);
 
   res.status(201).json({
     status: "success",
@@ -41,7 +41,7 @@ export const updateMenuItem = catchAsync(async (req, res) => {
   const updatedMenuItem = await menuService.updateMenuItem(
     req.params.id,
     req.body,
-    req.user.id,
+    req.user,
   );
 
   res.status(200).json({
@@ -53,7 +53,7 @@ export const updateMenuItem = catchAsync(async (req, res) => {
 });
 
 export const deleteMenuItem = catchAsync(async (req, res) => {
-  await menuService.deleteMenuItem(req.params.id, req.user.id);
+  await menuService.deleteMenuItem(req.params.id, req.user);
 
   res.status(204).json({
     status: "success",

@@ -66,9 +66,10 @@ export const getRestaurantById = async (id) => {
   return restaurant;
 };
 
-export const createRestaurant = async (body) => {
-  const { name, description, phoneNumber, openingHours, rating, ownerId } =
-    body;
+export const createRestaurant = async (body, userId) => {
+  const { name, description, phoneNumber, openingHours, rating } = body;
+
+  const ownerId = userId;
 
   const createdRestaurant = await prisma.restaurant.create({
     data: {

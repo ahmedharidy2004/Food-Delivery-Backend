@@ -5,7 +5,7 @@ import catchAsync from "./../utils/catchAsync.js";
 export const getAllUsers = catchAsync(async (req, res) => {
   const users = await userService.getAllUsers();
   res.status(200).json({
-    success: "success",
+    status: "success",
     results: users.length,
     data: {
       users,

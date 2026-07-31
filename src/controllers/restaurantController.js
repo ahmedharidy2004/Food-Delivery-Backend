@@ -27,7 +27,7 @@ export const getRestaurantById = catchAsync(async (req, res) => {
 export const createRestaurant = catchAsync(async (req, res) => {
   const CreatedRestaurant = await restaurantService.createRestaurant(
     req.body,
-    req.user,
+    req.user.id,
   );
 
   res.status(201).json({

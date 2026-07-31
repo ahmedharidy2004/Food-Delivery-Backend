@@ -72,7 +72,7 @@ export const getMenuItemById = async (id) => {
   return menuItem;
 };
 
-export const createMenuItem = async (body) => {
+export const createMenuItem = async (body, user) => {
   const {
     name,
     description,
@@ -89,6 +89,13 @@ export const createMenuItem = async (body) => {
   });
 
   if (!restaurant) throw new appError("Restaurant not found", 404);
+
+  if (user.role !== "ADMIN" && restaurant.ownerId !== user.id) {
+    throw new appError(
+      "You are not allowed to add items to this restaurant",
+      403,
+    );
+  }
 
   const category = await prisma.category.findUnique({
     where: { id: categoryId },
@@ -129,7 +136,7 @@ export const createMenuItem = async (body) => {
   return createdMenuItem;
 };
 
-export const updateMenuItem = async (id, body, userId) => {
+export const updateMenuItem = async (id, body, user) => {
   const {
     name,
     description,
@@ -166,7 +173,7 @@ export const updateMenuItem = async (id, body, userId) => {
 
   if (!menuItem) throw new appError("Menu item not found", 404);
 
-  if (menuItem.restaurant.ownerId !== userId) {
+  if (user.role !== "ADMIN" && menuItem.restaurant.ownerId !== user.id) {
     throw new appError("You are not allowed", 403);
   }
 
@@ -206,7 +213,7 @@ export const updateMenuItem = async (id, body, userId) => {
   return updatedMenuItem;
 };
 
-export const deleteMenuItem = async (id, userId) => {
+export const deleteMenuItem = async (id, user) => {
   // checks
   const menuItem = await prisma.menuItem.findUnique({
     where: { id },
@@ -217,8 +224,9 @@ export const deleteMenuItem = async (id, userId) => {
 
   if (!menuItem) throw new appError("Menu item not found", 404);
 
-  if (menuItem.restaurant.ownerId !== userId)
-    throw new appError("Forbidden", 403);
+  if (user.role !== "ADMIN" && menuItem.restaurant.ownerId !== user.id) {
+    throw new appError("You are not allowed", 403);
+  }
 
   await prisma.menuItem.delete({
     where: { id },

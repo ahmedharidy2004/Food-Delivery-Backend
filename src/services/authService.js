@@ -51,6 +51,11 @@ export const login = async (body) => {
     throw new AppError("Incorrect password provided", 400);
   }
 
+  // check if current user is active or not
+  if (!user.isActive) {
+    throw new AppError("This user is no longer active!", 400);
+  }
+
   // if so return user
   return user;
 };

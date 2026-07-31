@@ -19,7 +19,7 @@ export const getCart = async (userId) => {
   return cart;
 };
 
-export const deleteCart = async (userId) => {
+export const clearCart = async (userId) => {
   const cart = await prisma.cart.findUnique({
     where: {
       userId,
