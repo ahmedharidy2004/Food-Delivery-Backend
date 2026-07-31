@@ -102,7 +102,7 @@ model MenuItem {
 
 /////////////////// Review Model \\\\\\\\\\\\\\\\\\
 model Review {
-  id String @id @default(uuid())
+  id String @default(uuid())
   rating Int
   comment String
   
@@ -110,6 +110,7 @@ model Review {
   user User @relation(fields: [userId], references:[id])
   restaurantId String
   restaurant Restaurant @relation(fields: [restaurantId], references:[id])
+  @@unique([userId, restaurantId])
 }
 
 /////////////////// Order model \\\\\\\\\\\\\\\\\\

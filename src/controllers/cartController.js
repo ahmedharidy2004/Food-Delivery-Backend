@@ -53,3 +53,12 @@ export const createCartItem = catchAsync(async (req, res) => {
     },
   });
 });
+
+export const getTotalPrice = catchAsync(async (req, res) => {
+  const totalPrice = await cartService.getTotalPrice(req.user.id);
+
+  res.status(200).json({
+    status: "success",
+    message: `total price of the items = ${totalPrice}`,
+  });
+});

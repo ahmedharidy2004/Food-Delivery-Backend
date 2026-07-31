@@ -2,8 +2,11 @@ import * as restaurantController from "./../controllers/restaurantController.js"
 import { protect } from "./../middleware/protect.js";
 import { restrictTo } from "./../middleware/restrictTo.js";
 import express from "express";
+import reviewRouter from "./reviewRoutes.js";
 
 const router = express.Router();
+
+router.use("/:restaurantId/reviews", reviewRouter);
 
 router
   .route("/")

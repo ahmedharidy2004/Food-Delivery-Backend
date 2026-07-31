@@ -15,4 +15,6 @@ router
   .patch(cartController.updateCartItem)
   .delete(cartController.deleteCartItem);
 
+router.route("/totalPrice").get(cartController.getTotalPrice);
+
 export default router;

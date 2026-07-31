@@ -120,3 +120,30 @@ export const createCartItem = async (body, userId) => {
 
   return createdItem;
 };
+
+export const getTotalPrice = async (userId) => {
+  const cart = await prisma.cart.findUnique({
+    where: {
+      userId,
+    },
+    include: {
+      cartItems: {
+        include: {
+          menuItem: {
+            select: {
+              price: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!cart) throw new appError("Cart not found!", 404);
+
+  const total = cart.cartItems.reduce((sum, item) => {
+    return sum + Number(item.menuItem.price) * item.quantity;
+  }, 0);
+
+  return total;
+};
