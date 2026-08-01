@@ -24,4 +24,12 @@ build/
 
 # Coverage
 coverage/
+
+# Prisma generated client
 /generated/prisma
+
+# AI tool scaffolding / config
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
