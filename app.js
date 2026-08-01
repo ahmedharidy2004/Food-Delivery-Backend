@@ -6,6 +6,8 @@ import menuRoutes from "./src/routes/menuRoutes.js";
 import cartRoutes from "./src/routes/cartRoutes.js";
 import addressRoutes from "./src/routes/addressRoutes.js";
 import reviewRoutes from "./src/routes/reviewRoutes.js";
+import orderRoutes from "./src/routes/orderRoutes.js";
+import paymentRoutes from "./src/routes/paymentRoutes.js";
 
 const app = express();
 
@@ -17,5 +19,7 @@ app.use("/menuItems", menuRoutes);
 app.use("/cart", cartRoutes);
 app.use("/addresses", addressRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/orders", orderRoutes);
+app.use("/payments", paymentRoutes);
 
 export default app;

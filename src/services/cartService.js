@@ -1,6 +1,25 @@
 import appError from "./../utils/appError.js";
 import prisma from "./../config/config.js";
 
+// model Cart {
+//   id String @id @default(uuid())
+
+//   cartItems CartItem[]
+
+//   userId String @unique
+//   user User @relation(fields: [userId], references: [id])
+// }
+
+export const createCart = async (userId) => {
+  const cart = await prisma.cart.create({
+    data: {
+      userId,
+    },
+  });
+
+  return cart;
+};
+
 export const getCart = async (userId) => {
   const cart = await prisma.cart.findUnique({
     where: {

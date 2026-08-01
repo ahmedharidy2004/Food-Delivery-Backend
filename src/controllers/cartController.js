@@ -1,6 +1,17 @@
 import catchAsync from "./../utils/catchAsync.js";
 import * as cartService from "./../services/cartService.js";
 
+export const createCart = catchAsync(async (req, res) => {
+  const cart = await cartService.createCart(req.user.id);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      cart,
+    },
+  });
+});
+
 export const getCart = catchAsync(async (req, res) => {
   const cart = await cartService.getCart(req.user.id);
 

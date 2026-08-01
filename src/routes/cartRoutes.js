@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.use(protect);
 
-router.route("/").get(cartController.getCart).delete(cartController.clearCart);
+router
+  .route("/")
+  .get(cartController.getCart)
+  .delete(cartController.clearCart)
+  .post(cartController.createCart);
 
 router.route("/items").post(cartController.createCartItem);
 
