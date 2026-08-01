@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import AuthRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import restaurantRoutes from "./src/routes/restaurantRoutes.js";
@@ -10,6 +11,16 @@ import orderRoutes from "./src/routes/orderRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  handler: (req, res, next) => {
+    next(new AppError("Too many requests, please try again later.", 429));
+  },
+});
+
+app.use(limiter);
 
 app.use(express.json());
 app.use("/auth", AuthRoutes);

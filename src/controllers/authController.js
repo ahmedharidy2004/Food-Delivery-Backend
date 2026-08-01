@@ -2,6 +2,7 @@ import catchAsync from "./../utils/catchAsync.js";
 import * as authService from "./../services/authService.js";
 import { signToken } from "./../utils/jwt.js";
 import appError from "./../utils/appError.js";
+import sendEmail from "./../utils/email.js";
 
 export const signup = catchAsync(async (req, res) => {
   const user = await authService.signup(req.body);
@@ -43,9 +44,17 @@ export const forgetPassword = catchAsync(async (req, res) => {
   }
 
   const resetToken = await authService.forgetPassword(req.body.email);
+  const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
+
+  await sendEmail({
+    email: req.body.email,
+    subject: "Your password reset token (valid for 10 minutes)",
+    message: `Forgot your password? Click the link to reset it: ${resetURL}\nIf you didn't request this, please ignore this email.`,
+  });
+
   res.status(200).json({
     status: "success",
-    resetToken,
+    message: "reset URL sent to the email!",
   });
 });
 

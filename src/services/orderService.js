@@ -2,6 +2,12 @@ import AppError from "./../utils/appError.js";
 import prisma from "./../config/config.js";
 
 export const createOrder = async (userId, addressId, paymentMethod) => {
+  // check valid payment method
+  const paymentMethods = ["CASH", "CREDIT_CARD", "STRIPE"];
+
+  if (!paymentMethods.includes(paymentMethod))
+    throw new AppError("Invalid Payment method", 400);
+
   // check address existance and ownership
   const address = await prisma.address.findUnique({
     where: {

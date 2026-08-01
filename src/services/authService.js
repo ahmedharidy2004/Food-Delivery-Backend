@@ -4,6 +4,7 @@ import AppError from "./../utils/appError.js";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import prisma from "./../config/config.js";
+import sendEmail from "./../utils/email.js";
 
 export const signup = async (body) => {
   const user = await prisma.user.create({
