@@ -4,6 +4,7 @@ import * as authController from "./../controllers/authController.js";
 import { protect } from "./../middleware/protect.js";
 import { validateInput } from "./../middleware/validateInput.js";
 import { body } from "express-validator";
+import AppError from "./../utils/appError.js";
 
 const router = express.Router();
 

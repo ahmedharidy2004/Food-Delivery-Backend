@@ -9,6 +9,7 @@ import addressRoutes from "./src/routes/addressRoutes.js";
 import reviewRoutes from "./src/routes/reviewRoutes.js";
 import orderRoutes from "./src/routes/orderRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
+import AppError from "./src/utils/appError.js";
 
 const app = express();
 
@@ -32,5 +33,17 @@ app.use("/addresses", addressRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/orders", orderRoutes);
 app.use("/payments", paymentRoutes);
+
+// adding global error handler
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.isOperational ? err.message : "Something went wrong!",
+  });
+});
+
 
 export default app;

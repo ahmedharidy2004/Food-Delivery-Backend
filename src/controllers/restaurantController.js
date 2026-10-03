@@ -54,7 +54,7 @@ export const updateRestaurant = catchAsync(async (req, res) => {
 });
 
 export const deleteRestaurant = catchAsync(async (req, res) => {
-  await restaurantService.deleteRestaurant(req.params.id);
+  await restaurantService.deleteRestaurant(req.user.id,req.params.id);
 
   res.status(204).json({
     status: "success",

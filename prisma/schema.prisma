@@ -102,7 +102,7 @@ model MenuItem {
 
 /////////////////// Review Model \\\\\\\\\\\\\\\\\\
 model Review {
-  id String @default(uuid())
+  id String @default(uuid()) @id
   rating Int
   comment String
   

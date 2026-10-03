@@ -143,7 +143,22 @@ export const updateRestaurant = async (id, body, user) => {
   return updatedRestaurant;
 };
 
-export const deleteRestaurant = async (id) => {
+export const deleteRestaurant = async (userId, id) => {
+  const restaurant = await prisma.restaurant.findFirst({
+    where: {
+      id
+    },
+    select: {
+      ownerId: true
+    }
+  });
+
+  if(!restaurant)
+    throw new appError("Restaurant not found!", 404);
+
+  if(userId !== restaurant.ownerId)
+    throw new appError("you are not authorized to perform this action!", 403);
+  
   await prisma.restaurant.delete({
     where: {
       id: id,

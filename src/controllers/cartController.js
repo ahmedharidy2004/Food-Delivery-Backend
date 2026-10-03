@@ -36,7 +36,7 @@ export const updateCartItem = catchAsync(async (req, res) => {
   const itemId = req.params.id;
   const { quantity } = req.body;
 
-  const updatedItem = await cartService.updateCartItem(itemId, quantity);
+  const updatedItem = await cartService.updateCartItem(req.user.id, itemId, quantity);
   res.status(200).json({
     status: "success",
     data: {

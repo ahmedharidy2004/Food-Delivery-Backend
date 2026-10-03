@@ -53,10 +53,30 @@ export const clearCart = async (userId) => {
   });
 };
 
-export const updateCartItem = async (itemId, quantity) => {
+export const updateCartItem = async (userId, itemId, quantity) => {
   if (quantity < 1) {
     throw new appError("Quantity must be greater than 0.", 400);
   }
+
+  const item = await prisma.cartItem.findFirst({
+    where: {
+      id: itemId
+    },
+    select: {
+      cart: {
+        select: {
+          userId: true
+        }
+      }
+    }
+  });
+
+  if(!item)
+    throw new appError("Item Not Found!", 404);
+
+  if(userId !== item.cart.userId)
+    throw new appError("you are not authorized to perform this action!", 403);
+
   const updatedItem = await prisma.cartItem.update({
     where: {
       id: itemId,
