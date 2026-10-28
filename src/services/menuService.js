@@ -236,6 +236,23 @@ export const deleteMenuItem = async (id, user) => {
     throw new appError("You are not allowed", 403);
   }
 
+  // Check if item is referenced in any existing orders
+  const linkedOrderItem = await prisma.orderItem.findFirst({
+    where: { menuItemId: id },
+  });
+
+  if (linkedOrderItem) {
+    throw new appError(
+      "Cannot delete this menu item because it is associated with existing order history. You can mark it unavailable instead.",
+      400,
+    );
+  }
+
+  // If item is in user carts, remove it from carts before deleting
+  await prisma.cartItem.deleteMany({
+    where: { menuItemId: id },
+  });
+
   await prisma.menuItem.delete({
     where: { id },
   });

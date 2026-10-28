@@ -38,16 +38,17 @@ export const updateAddress = async (id, userId, body) => {
 
   const { street, city, country, zipCode } = body;
 
+  const updateData = {};
+  if (street !== undefined) updateData.street = street;
+  if (city !== undefined) updateData.city = city;
+  if (country !== undefined) updateData.country = country;
+  if (zipCode !== undefined) updateData.zipCode = zipCode;
+
   const updatedAddress = await prisma.address.update({
     where: {
       id,
     },
-    data: {
-      street,
-      city,
-      country,
-      zipCode,
-    },
+    data: updateData,
   });
 
   return updatedAddress;
@@ -62,6 +63,20 @@ export const deleteAddress = async (id, userId) => {
 
   if (!address) throw new AppError("Address not found!", 404);
   if (address.userId !== userId) throw new AppError("Not Authorized", 403);
+
+  // Check if address is referenced in any existing orders
+  const linkedOrder = await prisma.order.findFirst({
+    where: {
+      addressId: id,
+    },
+  });
+
+  if (linkedOrder) {
+    throw new AppError(
+      "Cannot delete this address because it is associated with existing orders. You can update its details instead.",
+      400,
+    );
+  }
 
   await prisma.address.delete({
     where: {
