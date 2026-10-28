@@ -147,23 +147,6 @@ export const updateMenuItem = async (id, body, user) => {
     categoryId,
   } = body;
 
-  // checks
-  if (restaurantId) {
-    const restaurant = await prisma.restaurant.findUnique({
-      where: { id: restaurantId },
-    });
-
-    if (!restaurant) throw new appError("Restaurant not found", 404);
-  }
-
-  if (categoryId) {
-    const category = await prisma.category.findUnique({
-      where: { id: categoryId },
-    });
-
-    if (!category) throw new appError("Category not found", 404);
-  }
-
   const menuItem = await prisma.menuItem.findUnique({
     where: { id },
     include: {
@@ -177,19 +160,44 @@ export const updateMenuItem = async (id, body, user) => {
     throw new appError("You are not allowed", 403);
   }
 
+  // checks
+  if (restaurantId) {
+    const targetRestaurant = await prisma.restaurant.findUnique({
+      where: { id: restaurantId },
+    });
+
+    if (!targetRestaurant) throw new appError("Restaurant not found", 404);
+
+    if (user.role !== "ADMIN" && targetRestaurant.ownerId !== user.id) {
+      throw new appError(
+        "You cannot move items to a restaurant you do not own",
+        403,
+      );
+    }
+  }
+
+  if (categoryId) {
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!category) throw new appError("Category not found", 404);
+  }
+
+  const updateData = {};
+  if (name !== undefined) updateData.name = name;
+  if (description !== undefined) updateData.description = description;
+  if (price !== undefined) updateData.price = price;
+  if (image !== undefined) updateData.image = image;
+  if (isAvailable !== undefined) updateData.isAvailable = isAvailable;
+  if (restaurantId !== undefined) updateData.restaurantId = restaurantId;
+  if (categoryId !== undefined) updateData.categoryId = categoryId;
+
   const updatedMenuItem = await prisma.menuItem.update({
     where: {
       id,
     },
-    data: {
-      name,
-      description,
-      price,
-      image,
-      isAvailable,
-      restaurantId,
-      categoryId,
-    },
+    data: updateData,
     select: {
       id: true,
       name: true,
