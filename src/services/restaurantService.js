@@ -101,8 +101,13 @@ export const createRestaurant = async (body, userId) => {
 };
 
 export const updateRestaurant = async (id, body, user) => {
-  const { name, description, phoneNumber, openingHours, rating, ownerId } =
-    body;
+  if (body.rating !== undefined) {
+    throw new appError("Field 'rating' cannot be updated", 400);
+  }
+
+  if (body.ownerId !== undefined) {
+    throw new appError("Field 'ownerId' cannot be updated", 400);
+  }
 
   const restaurant = await prisma.restaurant.findUnique({ where: { id } });
   if (!restaurant) throw new appError("Restaurant not found", 404);
@@ -111,18 +116,19 @@ export const updateRestaurant = async (id, body, user) => {
     throw new appError("You are not allowed to update this restaurant", 403);
   }
 
+  const { name, description, phoneNumber, openingHours } = body;
+
+  const updateData = {};
+  if (name !== undefined) updateData.name = name;
+  if (description !== undefined) updateData.description = description;
+  if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+  if (openingHours !== undefined) updateData.openingHours = openingHours;
+
   const updatedRestaurant = await prisma.restaurant.update({
     where: {
       id: id,
     },
-    data: {
-      name: name,
-      description: description,
-      phoneNumber: phoneNumber,
-      openingHours: openingHours,
-      rating: rating,
-      ownerId: ownerId,
-    },
+    data: updateData,
     select: {
       id: true,
       name: true,
